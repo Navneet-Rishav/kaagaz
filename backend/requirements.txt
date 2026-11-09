@@ -12,3 +12,4 @@ pyjwt>=2.9
 bcrypt>=4.2
 httpx
 python-multipart
+email-validator>=2
