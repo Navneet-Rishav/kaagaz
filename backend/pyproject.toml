@@ -1,0 +1,16 @@
+[project]
+name = "kaagaz-backend"
+version = "0.1.0"
+description = "Kaagaz: Hindi/English document assistant API (FastAPI + Postgres)"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 130
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

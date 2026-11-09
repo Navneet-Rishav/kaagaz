@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+# Node
+node_modules/
+dist/
+coverage/
+# Env and secrets
+.env
+.env.*
+!.env.example
+# Local data
+backend/uploads/
+backend/.pgdata/
+.vercel/
+*.log
+.DS_Store
