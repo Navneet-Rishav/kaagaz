@@ -147,7 +147,7 @@ _STOP = set(
         "और",
     ]
 )
-_WORD = re.compile(r"[\wऀ-ॿ\-]+", re.UNICODE)
+_WORD = re.compile(r"[\wऀ-ॣ०-ॿ\-]+", re.UNICODE)  # excludes the danda
 _SENT = re.compile(r"(?<=[.!?।])\s+|\n+")
 
 

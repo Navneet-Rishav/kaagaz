@@ -1,0 +1,25 @@
+# Local stack with a real Postgres (includes pg_trgm). Usage: docker compose up --build
+# API: http://localhost:8000  ·  Frontend: run `npm --prefix frontend run dev` separately.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: kaagaz
+      POSTGRES_PASSWORD: kaagaz
+      POSTGRES_DB: kaagaz
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kaagaz"]
+      interval: 2s
+      retries: 20
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://kaagaz:kaagaz@db:5432/kaagaz
+      JWT_SECRET: local-dev-secret-change-me-0123456789abcdef
+      CORS_ORIGINS: http://localhost:5173
+      AI_PROVIDER: demo
+    ports: ["8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy

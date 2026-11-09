@@ -17,7 +17,7 @@ from app.services.retrieval import Hit, retriever
 NOT_FOUND = "यह जानकारी दस्तावेज़ में नहीं मिली / Not found in this document"
 _CITATION = re.compile(r"\[\s*p\.?\s*(\d+)\s*\]", re.IGNORECASE)
 _DEVANAGARI = re.compile(r"[ऀ-ॿ]")
-_WORD = re.compile(r"[\wऀ-ॿ]+", re.UNICODE)
+_WORD = re.compile(r"[\wऀ-ॣ०-ॿ]+", re.UNICODE)  # excludes the danda
 
 
 class Rewrite(BaseModel):

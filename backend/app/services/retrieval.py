@@ -13,7 +13,8 @@ from typing import Protocol
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-_TOKEN = re.compile(r"[\wऀ-ॿ]+", re.UNICODE)
+# Devanagari letters and signs, but not the danda (।, U+0964) or double danda (॥, U+0965): those are punctuation.
+_TOKEN = re.compile(r"[\wऀ-ॣ०-ॿ]+", re.UNICODE)
 
 
 @dataclass

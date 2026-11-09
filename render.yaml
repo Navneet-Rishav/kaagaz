@@ -1,0 +1,27 @@
+# Render Blueprint for the Kaagaz API (free web service). Postgres is on Neon (free), not Render.
+services:
+  - type: web
+    name: kaagaz-api
+    runtime: python
+    plan: free
+    region: singapore # same AWS region as the Neon database (aws-ap-southeast-1)
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    # Migrations run on every start; Alembic is a no-op when the schema is current.
+    startCommand: alembic upgrade head && uvicorn --factory app.main:create_app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # Neon connection string
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false # the Vercel URL of the frontend
+      - key: AI_PROVIDER
+        value: demo # "sarvam" needs SARVAM_API_KEY and uses paid credits
+      - key: SARVAM_API_KEY
+        sync: false
