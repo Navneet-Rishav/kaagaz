@@ -14,6 +14,17 @@ from app.ai.base import AiError, ChatResult, PageText, Transcript
 BASE_URL = "https://api.sarvam.ai"
 
 
+def _page_text(page: dict) -> str:
+    """OCR results (checked against the live API, Nov 2026) give each page a list of layout `blocks` with
+    `text` and `reading_order`. Blocks become paragraphs so the chunker keeps them apart. Older responses
+    used a single `content` string; that is still accepted."""
+    blocks = page.get("blocks")
+    if isinstance(blocks, list):
+        ordered = sorted(blocks, key=lambda b: b.get("reading_order", 0))
+        return "\n\n".join(b.get("text", "").strip() for b in ordered if b.get("text", "").strip())
+    return page.get("content") or ""
+
+
 class SarvamProvider:
     name = "sarvam"
     is_demo = False
@@ -108,7 +119,8 @@ class SarvamProvider:
         pages: list[PageText] = []
         for doc in results.get("documents", []):
             for p in doc.get("pages", []):
-                pages.append(PageText(page=int(p.get("page_number", len(pages) + 1)), text=p.get("content") or ""))
+                number = int(p.get("page_num") or p.get("page_number") or len(pages) + 1)
+                pages.append(PageText(page=number, text=_page_text(p)))
         return sorted(pages, key=lambda p: p.page)
 
     # -- Voice ---------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 
 **A Hindi/English document assistant.** Upload a rent agreement, electricity bill, bank statement or land record. Kaagaz reads it, **masks Aadhaar, PAN, phone, bank and email details before any language model sees the text**, extracts the key fields with the page each came from, and answers questions in Hindi or English with **page citations that are checked in code**.
 
-> **Live demo:** _deploying: link coming here_. Click **"Try the demo"**: you get a private demo account with three sample documents, no sign-up.
+> **Live demo:** https://kaagaz-pi.vercel.app · API: https://kaagaz-api-l5j7.onrender.com/healthz (free tier: the first request after 15 idle minutes can take up to a minute). Click **"Try the demo"**: you get a private demo account with three sample documents, no sign-up.
 > **The public demo runs in demo mode:** a rule-based stand-in replaces the AI model, so no paid API is called. OCR and voice need the Sarvam API and are switched off there (the UI says so). Everything else (upload, queue, masking, retrieval, citation checks, the UI) is the real code path.
 
 | Fields with page links | Masked page text | Q&A with citations (phone) |
@@ -43,6 +43,7 @@
 - **119 backend tests** (pytest) against a **real Postgres** (Docker service in CI, bundled `pgserver` locally): Verhoeff, every PII pattern including Devanagari digits and false positives, garbled-text detection, chunk page tracking, the job state machine (retry, give-up, `SKIP LOCKED` with two sessions, stale requeue), auth, upload limits, ownership, rate limits, citation validation and refusal (including a model that cites a page it was not given), voice routes, and the Sarvam client against mocked HTTP.
 - **9 frontend tests** (Vitest + Testing Library) plus typecheck, lint and build; an end-to-end run with Playwright produced the screenshots above.
 - GitHub Actions: ruff + pytest, frontend checks, Docker build. CI never calls a paid API.
+- **Real-API smoke test** (10 Nov 2026, run once by hand, not an eval): Sarvam Vision OCR on the Hindi land-record sample returned clean Devanagari text, masking caught the Devanagari-digit Aadhaar and phone, `sarvam-105b` classified it and extracted khasra number, village, area and owner with page 1, and answered a Hindi and an English question with valid `[p.1]` citations. It also showed the live OCR response format differs from older docs (layout blocks, not one string), and the client was fixed. This is one document, so it says the integration works, not how accurate it is.
 
 ## Architecture
 

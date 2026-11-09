@@ -91,6 +91,38 @@ def test_ocr_job_flow_polls_until_complete() -> None:
     assert [(p.page, p.text) for p in pages] == [(1, "एक"), (2, "दो")]
 
 
+def test_ocr_block_results_are_joined_in_reading_order() -> None:
+    """The live API returns pages as layout blocks (verified Nov 2026), not one content string."""
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if req.url.path.endswith("/parse"):
+            return httpx.Response(201, json={"job_id": "j3", "status": "pending"})
+        if req.url.path.endswith("/status"):
+            return httpx.Response(200, json={"status": "completed"})
+        return httpx.Response(
+            200,
+            json={
+                "documents": [
+                    {
+                        "pages": [
+                            {
+                                "page_num": 1,
+                                "blocks": [
+                                    {"block_id": "p1-b2", "text": "खसरा संख्या: 512/3", "reading_order": 2},
+                                    {"block_id": "p1-b1", "text": "ज़िला: गौतम बुद्ध नगर", "reading_order": 1},
+                                    {"block_id": "p1-b3", "text": "  ", "reading_order": 3},
+                                ],
+                            }
+                        ]
+                    }
+                ]
+            },
+        )
+
+    pages = _provider(handler).parse_document(b"%PDF-", "k.pdf", "hi-IN")
+    assert [(p.page, p.text) for p in pages] == [(1, "ज़िला: गौतम बुद्ध नगर\n\nखसरा संख्या: 512/3")]
+
+
 def test_ocr_failed_job_raises() -> None:
     def handler(req):
         if req.url.path.endswith("/parse"):

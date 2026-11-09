@@ -38,7 +38,7 @@ Uploads return `202` immediately; a worker thread inside the API process works t
 ## 5. One AI interface, two implementations
 
 `AiProvider` (a `Protocol`) has `chat`, `parse_document`, `transcribe` and `speak`. The pipeline only knows this interface.
-- **`SarvamProvider`**: timeouts, retries with backoff on 429/5xx/network errors, fail-fast on other 4xx. JSON replies are validated with Pydantic and retried once with the validation error (`complete_json`).
+- **`SarvamProvider`**: Sarvam Vision OCR results come back as layout blocks with a reading order (checked against the live API); blocks are joined as paragraphs so the chunker keeps them apart. Timeouts, retries with backoff on 429/5xx/network errors, fail-fast on other 4xx. JSON replies are validated with Pydantic and retried once with the validation error (`complete_json`).
 - **`DemoProvider`**: offline and rule-based (keywords, regexes, best-matching sentence). **It is not a model.** Tests, CI and the public demo use it, so nothing calls a paid API. OCR and voice are not faked: they return a clear "needs the Sarvam API" error, and the UI disables those buttons with that explanation.
 - No eval numbers are published from the demo provider; they would only measure regexes written next to the sample documents.
 
