@@ -15,7 +15,7 @@ BACKEND = Path(__file__).resolve().parent.parent
 
 os.environ.setdefault("JWT_SECRET", "test-secret-" + "x" * 32)
 os.environ["ENV"] = "test"
-os.environ["AI_PROVIDER"] = "fake"
+os.environ["AI_PROVIDER"] = "demo"
 os.environ["RUN_WORKER"] = "false"
 
 _pg = None
@@ -23,10 +23,12 @@ if not os.environ.get("TEST_DATABASE_URL"):
     import pgserver
 
     _pg = pgserver.get_server(str(BACKEND / ".pgdata"), cleanup_mode="stop")
-    _pg.psql("SELECT 1 FROM pg_database WHERE datname='kaagaz_test'")
     if "1 row" not in _pg.psql("SELECT 1 FROM pg_database WHERE datname='kaagaz_test'"):
         _pg.psql("CREATE DATABASE kaagaz_test")
     os.environ["TEST_DATABASE_URL"] = _pg.get_uri("kaagaz_test")
+# The harness drops and recreates the schema, so never let it near a hosted database.
+if "neon.tech" in os.environ["TEST_DATABASE_URL"] or "render.com" in os.environ["TEST_DATABASE_URL"]:
+    raise RuntimeError("Refusing to run tests against a hosted database")
 os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
 
 TABLES = ["qa_entries", "chunks", "pages", "jobs", "documents", "users"]

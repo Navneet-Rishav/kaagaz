@@ -1,0 +1,13 @@
+{
+ "source": "prepared text (stands in for an OCR result)",
+ "pages": [
+  {
+   "page": 1,
+   "text": "RENT AGREEMENT / किरायानामा (DEMO DOCUMENT - FICTIONAL)\n\nThis Rent Agreement is made at Noida on 15/03/2026.\n\nLandlord: Sunita Verma (DEMO), Aadhaar 2345 6789 0126, PAN ABCDE1234F, mobile +91 98765 43210, email sunita.demo@example.com\nTenant: Arjun Mehta (DEMO), mobile 91234 56789\n\nProperty address: Flat 204, Demo Residency, Sector 62, Noida, Uttar Pradesh\n\n1. Term. The tenancy starts on 01/04/2026 and ends on 28/02/2027 (eleven months).\n\n2. Rent. The monthly rent is ₹18,500 (Rupees Eighteen Thousand Five Hundred only), payable on or before the 5th of every month by bank transfer to A/c No. 501004567890, IFSC HDFC0001234.\n\n3. Security deposit. The tenant has paid a security deposit of ₹37,000, refundable at the end of the tenancy after deducting unpaid dues and damages, if any.\n\n4. Maintenance. Society maintenance of ₹1,500 per month is included in the rent. Electricity and water bills are paid by the tenant."
+  },
+  {
+   "page": 2,
+   "text": "5. Lock-in and notice. There is a lock-in period of six months. After the lock-in, either party may end this agreement by giving a notice period of two months in writing.\n\n6. Use. The premises will be used only for residence. Pets are allowed with the landlord's written consent.\n\nहिंदी सारांश\n\nमकान मालिक: सुनीता वर्मा (डेमो)\nकिरायेदार: अर्जुन मेहता (डेमो)\nमासिक किराया ₹18,500 है, जो हर महीने की 5 तारीख तक देय है।\nसिक्योरिटी डिपॉज़िट ₹37,000 है, जो किरायानामा समाप्त होने पर लौटाया जाएगा।\nकिरायानामा 01/04/2026 से 28/02/2027 तक मान्य है।\nलॉक-इन अवधि छह महीने है। इसके बाद दो महीने का लिखित नोटिस देकर अनुबंध समाप्त किया जा सकता है।\nपालतू जानवर मकान मालिक की लिखित सहमति से रखे जा सकते हैं।\n\nSigned: Landlord (DEMO)    Tenant (DEMO)    Witnesses: 1. Demo Witness  2. Demo Witness"
+  }
+ ]
+}

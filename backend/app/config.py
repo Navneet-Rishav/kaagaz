@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     jwt_expires_minutes: int = 8 * 60
     cors_origins: str = "http://localhost:5173"
 
-    # "fake" runs everything offline (tests, CI, no API key); "sarvam" calls the real APIs.
-    ai_provider: Literal["fake", "sarvam"] = "fake"
+    # "demo" runs everything offline with a rule-based provider (tests, CI, no API key); "sarvam" calls the real APIs.
+    ai_provider: Literal["demo", "sarvam"] = "demo"
     sarvam_api_key: str | None = None
     sarvam_chat_model: str = "sarvam-105b"
     sarvam_reasoning_effort: Literal["none", "low", "medium", "high", "max"] | None = None

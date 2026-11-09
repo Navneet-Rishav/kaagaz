@@ -14,3 +14,5 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
+# Line length is left to `ruff format`; the remaining long lines are string literals (prompts, test data).
+ignore = ["E501"]

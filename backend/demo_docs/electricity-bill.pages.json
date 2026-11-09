@@ -1,0 +1,9 @@
+{
+ "source": "prepared text (stands in for an OCR result)",
+ "pages": [
+  {
+   "page": 1,
+   "text": "DEMO POWER DISTRIBUTION LTD. - ELECTRICITY BILL (FICTIONAL)\nबिजली बिल\n\nConsumer name: Arjun Mehta (DEMO)\nConsumer number: DEMO-4471-0098\nAddress: Flat 204, Demo Residency, Sector 62, Noida\nRegistered mobile: 98765 43210\n\nBilling period: 01 Sep 2026 to 30 Sep 2026\nBill date: 05/10/2026\nTariff: Domestic (LMV-1), sanctioned load 3 kW\n\nMeter reading: previous 18,402, current 18,714\nUnits consumed: 312 kWh (खपत यूनिट)\n\nEnergy charges: ₹2,184.00\nFixed charges: ₹330.00\nElectricity duty: ₹332.00\n\nAmount due: ₹2,846 (देय राशि)\nDue date: 20/10/2026 (अंतिम तिथि)\nLate payment surcharge of 1.25% per month applies after the due date.\n\nPay online with your consumer number, or at any Demo Power cash counter."
+  }
+ ]
+}

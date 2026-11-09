@@ -2,17 +2,21 @@
 
 import json
 import logging
+import os
 import time
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.ai import get_provider
 from app.config import get_settings
 from app.db import get_engine
 from app.errors import install_error_handlers
-from app.routes import auth
+from app.routes import auth, documents, voice
+from app.services.jobs import Worker
 
 
 class _JsonFormatter(logging.Formatter):
@@ -41,7 +45,17 @@ log = logging.getLogger("kaagaz.http")
 def create_app() -> FastAPI:
     settings = get_settings()
     _configure_logging()
-    app = FastAPI(title="Kaagaz API", version="0.1.0")
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        worker = Worker(settings.worker_poll_seconds) if settings.run_worker else None
+        if worker:
+            worker.start()
+        yield
+        if worker:
+            worker.stop()
+
+    app = FastAPI(title="Kaagaz API", version="0.1.0", lifespan=lifespan)
     install_error_handlers(app)
 
     app.add_middleware(
@@ -71,7 +85,25 @@ def create_app() -> FastAPI:
             db = "up"
         except Exception:
             db = "down"
-        return {"status": "ok" if db == "up" else "degraded", "db": db}
+        out = {"status": "ok" if db == "up" else "degraded", "db": db}
+        if commit := os.environ.get("RENDER_GIT_COMMIT"):
+            out["commit"] = commit[:7]
+        return out
+
+    @app.get("/api/meta")
+    def meta() -> dict:
+        """What the UI needs to label results honestly: is real AI on, and which features work."""
+        p = get_provider()
+        return {
+            "provider": p.name,
+            "model": p.model,
+            "demo_mode": p.is_demo,
+            "ocr_enabled": not p.is_demo,
+            "voice_enabled": not p.is_demo,
+            "limits": {"max_upload_mb": settings.max_upload_mb, "max_pages": settings.max_pages},
+        }
 
     app.include_router(auth.router)
+    app.include_router(documents.router)
+    app.include_router(voice.router)
     return app

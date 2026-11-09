@@ -1,7 +1,6 @@
-import secrets
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -9,11 +8,11 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.errors import ApiError
 from app.models import User
+from app.ratelimit import limiter
 from app.security import CurrentUser, create_token, hash_password, verify_password
+from app.services.demo_data import create_demo_user
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-
-DEMO_EMAIL = "demo@kaagaz.demo"
 
 
 class RegisterIn(BaseModel):
@@ -66,14 +65,12 @@ def login(body: LoginIn, db: Annotated[Session, Depends(get_db)]) -> SessionOut:
 
 
 @router.post("/demo")
-def demo(db: Annotated[Session, Depends(get_db)]) -> SessionOut:
-    """One-click demo login. The demo user has no usable password and owns the seeded sample documents."""
-    user = db.scalar(select(User).where(User.email == DEMO_EMAIL))
-    if user is None:
-        user = User(email=DEMO_EMAIL, name="Demo User", is_demo=True, password_hash=hash_password(secrets.token_urlsafe(32)))
-        db.add(user)
-        db.commit()
-    return _session(user)
+def demo(request: Request, db: Annotated[Session, Depends(get_db)]) -> SessionOut:
+    """One-click demo login. Each click gets a fresh, isolated demo account (no usable password) seeded with
+    the three sample documents, so visitors never see each other's uploads. Expires after 24 hours."""
+    ip = request.client.host if request.client else "unknown"
+    limiter.hit("demo", ip, limit=20)  # per IP per hour: each demo account runs the pipeline 3 times
+    return _session(create_demo_user(db))
 
 
 @router.get("/me")

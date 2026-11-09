@@ -13,6 +13,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -135,6 +136,9 @@ class Job(Base):
     run_after: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     locked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_error: Mapped[str | None] = mapped_column(Text)
+    # The uploaded file, kept in Postgres only until processing ends (then set to NULL). Render's free disk is
+    # wiped on restart, so a file on disk could be lost; in the row it survives a restart with the job.
+    payload: Mapped[bytes | None] = mapped_column(LargeBinary, deferred=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 

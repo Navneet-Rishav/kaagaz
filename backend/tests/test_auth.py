@@ -73,11 +73,10 @@ def test_expired_token_rejected(client) -> None:
     assert r.status_code == 401 and "expired" in r.json()["error"]["message"]
 
 
-def test_demo_login_is_idempotent_and_cannot_password_login(client) -> None:
+def test_demo_accounts_cannot_log_in_with_a_password(client) -> None:
     a = client.post("/api/auth/demo").json()
-    b = client.post("/api/auth/demo").json()
-    assert a["user"]["id"] == b["user"]["id"] and a["user"]["is_demo"]
-    r = client.post("/api/auth/login", json={"email": "demo@kaagaz.demo", "password": "anything"})
+    assert a["user"]["is_demo"] and a["user"]["email"].endswith("@kaagaz.demo")
+    r = client.post("/api/auth/login", json={"email": a["user"]["email"], "password": "anything"})
     assert r.status_code == 401
 
 
