@@ -177,6 +177,7 @@ def test_demo_user_gets_three_prepared_documents(db) -> None:
         assert d.text_source == "demo_prepared"
     rent, bill, khasra = docs["rent-agreement-bilingual.pdf"], docs["electricity-bill.pdf"], docs["khasra-khatauni-hindi.pdf"]
     assert rent.doc_type.value == "rent_agreement" and rent.fields["monthly_rent_inr"]["value"] == "18500"
+    assert rent.fields["start_date"]["value"] == "01/04/2026" and rent.fields["end_date"]["value"] == "28/02/2027"
     assert rent.pii_counts == {"AADHAAR": 1, "PAN": 1, "PHONE": 2, "EMAIL": 1, "BANK_ACCOUNT": 1, "IFSC": 1}
     assert bill.doc_type.value == "electricity_bill" and bill.fields["amount_due_inr"]["value"] == "2846"
     assert khasra.doc_type.value == "property_record" and khasra.fields["khasra_number"]["value"] == "512/3"

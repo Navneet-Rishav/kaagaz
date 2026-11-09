@@ -63,6 +63,7 @@ def test_upload_process_and_read_document(client, auth_headers, db) -> None:
     assert [d["status"] for d in listing] == ["ready"]
     d = client.get(f"/api/documents/{doc_id}", headers=auth_headers).json()
     assert d["doc_type"] == "rent_agreement" and d["original_deleted"] is True
+    assert [f["name"] for f in d["fields"]][:4] == ["landlord_name", "tenant_name", "property_address", "monthly_rent_inr"]
     rent = next(f for f in d["fields"] if f["name"] == "monthly_rent_inr")
     assert rent == {
         "name": "monthly_rent_inr",

@@ -87,12 +87,13 @@ def get_document(doc_id: str, user: CurrentUser, db: Db) -> dict:
     fields = dict(d.fields or {})
     meta = fields.pop("_meta", None)
     labels = FIELDS.get(d.doc_type, {}) if d.doc_type else {}
+    # JSONB does not keep key order, so return fields in the order the schema defines them.
+    order = [k for k in labels if k in fields] + [k for k in fields if k not in labels]
     return {
         **_summary(d),
         "meta": meta,
         "fields": [
-            {"name": k, "label_en": labels.get(k, (k, k))[0], "label_hi": labels.get(k, (k, k))[1], **v}
-            for k, v in fields.items()
+            {"name": k, "label_en": labels.get(k, (k, k))[0], "label_hi": labels.get(k, (k, k))[1], **fields[k]} for k in order
         ],
     }
 

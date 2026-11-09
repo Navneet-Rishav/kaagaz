@@ -39,8 +39,15 @@ _FIELD_PATTERNS: dict[str, list[str]] = {
     "property_address": [r"(?:property address|premises|संपत्ति का पता|पता)\s*[:\-–]\s*([^\n]+)"],
     "monthly_rent_inr": [r"(?:monthly rent|rent per month|मासिक किराया)[^\d₹\n]{0,30}" + _AMOUNT],
     "security_deposit_inr": [r"(?:security deposit|सिक्योरिटी डिपॉज़िट|जमानत राशि)[^\d₹\n]{0,30}" + _AMOUNT],
-    "start_date": [r"(?:start date|commencing on|from|आरंभ तिथि|से)\s*[:\-–]?\s*" + _DATE],
-    "end_date": [r"(?:end date|ending on|till|until|समाप्ति तिथि|तक)\s*[:\-–]?\s*" + _DATE],
+    # In Hindi the date comes BEFORE the postposition: "01/04/2026 से 28/02/2027 तक".
+    "start_date": [
+        r"(?:start date|starts on|commencing on|commences on|w\.e\.f\.?|आरंभ तिथि)\s*[:\-–]?\s*" + _DATE,
+        _DATE + r"\s*से",
+    ],
+    "end_date": [
+        r"(?:end date|ends on|ending on|expires on|till|until|समाप्ति तिथि)\s*[:\-–]?\s*" + _DATE,
+        r"से\s*" + _DATE + r"\s*तक",
+    ],
     "notice_period": [r"(?:notice period|नोटिस अवधि)\s*[:\-–]?\s*(?:of\s+)?([^\n.]+)"],
     "lock_in_period": [r"(?:lock-in period|lock in period|लॉक-इन अवधि)\s*[:\-–]?\s*(?:of\s+)?([^\n.]+)"],
     "consumer_name": [r"(?:consumer name|उपभोक्ता का नाम)\s*[:\-–]\s*([^\n]+)"],

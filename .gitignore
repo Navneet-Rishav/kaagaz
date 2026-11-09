@@ -20,3 +20,5 @@ backend/.pgdata/
 .vercel/
 *.log
 .DS_Store
+# notifier secret (lives outside this repo, listed for safety)
+telegram-token.txt
