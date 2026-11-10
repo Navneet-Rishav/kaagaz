@@ -105,6 +105,7 @@ Full reasoning, with alternatives, is in [docs/DECISIONS.md](docs/DECISIONS.md).
 - **Names and addresses are not masked:** that needs an NER model, which does not fit free-tier RAM. Only pattern-based identifiers are masked.
 - **No embeddings:** keyword search in two languages plus trigram fallback. It can miss answers phrased very differently from the document.
 - **The public demo uses rule-based stand-ins, not AI**, and its sample documents use prepared text instead of OCR. It shows the product flow, not model quality. No accuracy numbers are reported from it.
+- **Deploys:** pushes to `main` deploy the API on Render and the app on Vercel once CI passes.
 - **Render free tier sleeps** after 15 idle minutes; the first request can take up to a minute.
 - Rate limits are in memory (per process).
 
