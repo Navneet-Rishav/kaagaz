@@ -74,3 +74,7 @@ The model answers only from the retrieved excerpts and cites pages like `[p.2]`.
 - **API on Render** (Singapore), **Postgres on Neon** (Singapore, same AWS region), **UI on Vercel**.
 - Render's free instance sleeps after 15 idle minutes; the first request can take up to a minute. The UI says so on the demo button.
 - Migrations run on every start (`alembic upgrade head` is a no-op when current).
+
+## 11. Evals: a small labelled set, no demo-provider numbers
+
+`backend/evals/dataset.py` labels the demo documents (fields with pages) and 12 questions, including 3 that must be refused. The runner uses the same `process_document` and `ask` code as the API, creates a temporary user and deletes it afterwards. Matching is lenient where formatting legitimately differs (`18,500` = `18500`, a "(DEMO)" suffix) but numbers must be equal. Results from the rule-based demo provider are never reported: it was written alongside the documents, so a high score would only measure that. Only a real-model run produces numbers worth publishing, and they will be labelled with the set size.

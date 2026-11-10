@@ -40,10 +40,16 @@
 - Full **Hindi/English UI toggle**, responsive from 375 px, loading/empty/error states, accessible labels.
 
 **Tests and CI**
-- **119 backend tests** (pytest) against a **real Postgres** (Docker service in CI, bundled `pgserver` locally): Verhoeff, every PII pattern including Devanagari digits and false positives, garbled-text detection, chunk page tracking, the job state machine (retry, give-up, `SKIP LOCKED` with two sessions, stale requeue), auth, upload limits, ownership, rate limits, citation validation and refusal (including a model that cites a page it was not given), voice routes, and the Sarvam client against mocked HTTP.
+- **122 backend tests** (pytest) against a **real Postgres** (Docker service in CI, bundled `pgserver` locally): Verhoeff, every PII pattern including Devanagari digits and false positives, garbled-text detection, chunk page tracking, the job state machine (retry, give-up, `SKIP LOCKED` with two sessions, stale requeue), auth, upload limits, ownership, rate limits, citation validation and refusal (including a model that cites a page it was not given), voice routes, and the Sarvam client against mocked HTTP.
 - **9 frontend tests** (Vitest + Testing Library) plus typecheck, lint and build; an end-to-end run with Playwright produced the screenshots above.
 - GitHub Actions: ruff + pytest, frontend checks, Docker build. CI never calls a paid API.
 - **Real-API smoke test** (10 Nov 2026, run once by hand, not an eval): Sarvam Vision OCR on the Hindi land-record sample returned clean Devanagari text, masking caught the Devanagari-digit Aadhaar and phone, `sarvam-105b` classified it and extracted khasra number, village, area and owner with page 1, and answered a Hindi and an English question with valid `[p.1]` citations. It also showed the live OCR response format differs from older docs (layout blocks, not one string), and the client was fixed. This is one document, so it says the integration works, not how accurate it is.
+
+## Evals
+
+`backend/evals/` holds a small labelled set: the three demo documents with 19 expected fields (value and page) and 12 questions, 3 of which must be refused. `python -m evals.run` runs them through the real pipeline and Q&A code and reports document-type accuracy, field value + page accuracy, whether answers cite the right page, refusal correctness and p50/p95 latency.
+
+**No results are published yet.** The public demo uses the rule-based stand-in, which was written next to these documents, so its scores would not mean anything; the eval has only been run with it to prove the script works (a test runs it in CI). A real-model run (`AI_PROVIDER=sarvam python -m evals.run`) needs paid API credits; its numbers will go here, labelled as coming from 3 documents and 12 questions.
 
 ## Architecture
 
