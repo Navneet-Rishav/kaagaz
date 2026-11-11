@@ -78,3 +78,10 @@ The model answers only from the retrieved excerpts and cites pages like `[p.2]`.
 ## 11. Evals: a small labelled set, no demo-provider numbers
 
 `backend/evals/dataset.py` labels the demo documents (fields with pages) and 12 questions, including 3 that must be refused. The runner uses the same `process_document` and `ask` code as the API, creates a temporary user and deletes it afterwards. Matching is lenient where formatting legitimately differs (`18,500` = `18500`, a "(DEMO)" suffix) but numbers must be equal. Results from the rule-based demo provider are never reported: it was written alongside the documents, so a high score would only measure that. Only a real-model run produces numbers worth publishing, and they will be labelled with the set size.
+
+## 12. Secret scanning (gitleaks in CI)
+
+A separate workflow (`.github/workflows/gitleaks.yml`) scans the **full git history** on every push and pull request and fails if it finds a secret.
+- Runs the gitleaks binary directly (pinned v8.30.1, SHA-256 checked) rather than a marketplace action: no extra token or permissions, and it's easy to see exactly what runs.
+- `.gitleaks.toml` keeps all default rules and allow-lists only known placeholders (local docker/CI database credentials, the local docker JWT secret, test-only secrets), each matched exactly with a comment explaining why it is safe. A real token planted in any allow-listed file is still caught (checked by hand).
+- Alternative considered: GitHub's built-in secret scanning push protection. It is useful too, but it can't be run locally or shown in CI, and it doesn't cover generic patterns the same way.

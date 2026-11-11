@@ -1,0 +1,23 @@
+# Secret scanning config (gitleaks v8.30). All default rules stay on; the allow-lists below are
+# exact, known non-secrets. Each is matched as narrowly as possible so a real key in the same
+# file would still fail the scan. Add an entry here only with a comment saying why it is safe.
+title = "kaagaz"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Local Postgres credentials (kaagaz:kaagaz) for docker-compose, .env.example and the CI service container; that database only exists on a developer machine or inside CI"
+regexes = ['''postgresql\+psycopg://kaagaz:kaagaz@(localhost|db):5432/kaagaz(_test)?''']
+
+[[allowlists]]
+description = "Local docker-compose JWT secret, documented as a placeholder; production uses a Render-generated value"
+paths = ['''^docker-compose\.yml$''']
+regexes = ['''local-dev-secret-change-me-0123456789abcdef''']
+condition = "AND"
+
+[[allowlists]]
+description = "Test-only JWT secret built in the pytest setup; never used outside tests"
+paths = ['''^backend/tests/conftest\.py$''']
+regexes = ['''"test-secret-" \+ "x" \* 32''']
+condition = "AND"
